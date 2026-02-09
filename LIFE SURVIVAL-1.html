@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS LEARNING | Grade 8 Ultimate Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Noto+Sans+TC:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020205;
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff0055;
+            --neon-green: #0aff0a;
+            --neon-yellow: #fcee0a;
+            --neon-purple: #bc13fe;
+            --glass-panel: rgba(20, 25, 40, 0.7);
+            --border-dim: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 243, 255, 0.03) 10px, rgba(0, 243, 255, 0.03) 11px);
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Rajdhani', 'Noto Sans TC', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 350px; /* Space for HUD */
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(5, 5, 10, 0.95);
+            border-bottom: 2px solid var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, #fff, var(--neon-blue), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .db-counter {
+            color: #888;
+            font-family: 'Orbitron';
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        /* --- NAV TABS --- */
+        .nav-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 0 15px;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-dim);
+            color: #aaa;
+            padding: 12px 20px;
+            font-family: 'Orbitron';
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 4px;
+            flex: 1 1 auto;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .nav-btn:hover { border-color: #fff; color: #fff; }
+
+        .nav-btn.active {
+            background: var(--theme-color);
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 20px var(--theme-color);
+        }
+
+        /* --- GRID SYSTEM --- */
+        .module-section {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            animation: slideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .module-section.active { display: block; }
+
+        @keyframes slideUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .vocab-card {
+            background: var(--glass-panel);
+            border: 1px solid var(--border-dim);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 3px;
+            background: var(--theme-color);
+            opacity: 0.5;
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--theme-color);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        .vocab-card.selected {
+            background: var(--theme-color);
+            border-color: #fff;
+            box-shadow: 0 0 25px var(--theme-color);
+        }
+        
+        .vocab-card.selected .en-word, .vocab-card.selected .ch-word {
+            color: #000;
+            text-shadow: none;
+        }
+
+        .en-word { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 5px; }
+        .ch-word { font-size: 0.95rem; color: #bbb; }
+
+        /* --- HUD CONSOLE --- */
+        .hud-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 320px;
+            background: rgba(8, 8, 12, 0.98);
+            border-top: 3px solid var(--neon-blue);
+            z-index: 999;
+            transform: translateY(110%);
+            transition: transform 0.3s ease-out;
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+        }
+
+        .hud-panel.active { transform: translateY(0); }
+
+        .hud-inner {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            padding: 25px;
+            gap: 30px;
+        }
+
+        .hud-left {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid #333;
+            padding-right: 20px;
+        }
+
+        .word-display {
+            font-family: 'Orbitron';
+            font-size: 2.8rem;
+            color: var(--neon-yellow);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .mean-display {
+            font-size: 1.2rem;
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+            padding: 3px 10px;
+            border-radius: 4px;
+            align-self: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .sentence-area {
+            background: rgba(0, 243, 255, 0.03);
+            border-left: 4px solid var(--neon-blue);
+            padding: 15px;
+        }
+
+        .sent-en { font-size: 1.1rem; color: #eee; margin-bottom: 8px; line-height: 1.5; }
+        .sent-cn { font-size: 1rem; color: #888; font-weight: 300; }
+
+        .hud-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .mic-btn {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 2px solid #444;
+            background: transparent;
+            color: #444;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .mic-btn:hover { border-color: #fff; color: #fff; }
+
+        .mic-btn.recording {
+            border-color: var(--neon-pink);
+            background: var(--neon-pink);
+            color: #fff;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.1);} 100% {transform:scale(1);} }
+
+        .status-txt {
+            font-family: 'Orbitron';
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            min-height: 45px;
+        }
+
+        .replay-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .replay-btn:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hud-inner { flex-direction: column; padding: 15px; }
+            .hud-left { border-right: none; border-bottom: 1px solid #333; padding-bottom: 15px; padding-right: 0; }
+            .hud-panel { height: auto; }
+            .word-display { font-size: 2rem; }
+            body { padding-bottom: 450px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>NEXUS <span style="color:var(--neon-blue)">ULTIMATE</span></h1>
+    <div class="db-counter">DATA STATUS: 100+ WORDS LOADED</div>
+</header>
+
+<div class="nav-wrapper">
+    <button class="nav-btn active" style="--theme-color:var(--neon-blue)" onclick="switchTab('dining', this)">🍖 Dining (飲食)</button>
+    <button class="nav-btn" style="--theme-color:var(--neon-pink)" onclick="switchTab('shopping', this)">👗 Shopping (購物)</button>
+    <button class="nav-btn" style="--theme-color:var(--neon-green)" onclick="switchTab('health', this)">🚑 Health (健康)</button>
+    <button class="nav-btn" style="--theme-color:var(--neon-yellow)" onclick="switchTab('nature', this)">🌪️ Nature (災害)</button>
+    <button class="nav-btn" style="--theme-color:var(--neon-purple)" onclick="switchTab('eco', this)">🐢 Eco (生態)</button>
+</div>
+
+<!-- Modules -->
+<div id="mod-dining" class="module-section active">
+    <div class="vocab-grid" id="grid-dining"></div>
+</div>
+<div id="mod-shopping" class="module-section">
+    <div class="vocab-grid" id="grid-shopping"></div>
+</div>
+<div id="mod-health" class="module-section">
+    <div class="vocab-grid" id="grid-health"></div>
+</div>
+<div id="mod-nature" class="module-section">
+    <div class="vocab-grid" id="grid-nature"></div>
+</div>
+<div id="mod-eco" class="module-section">
+    <div class="vocab-grid" id="grid-eco"></div>
+</div>
+
+<!-- HUD -->
+<div class="hud-panel" id="hud">
+    <div class="hud-inner">
+        <div class="hud-left">
+            <div class="word-display" id="disp-word">READY</div>
+            <div class="mean-display" id="disp-mean">Select a word</div>
+            <div class="sentence-area">
+                <div class="sent-en" id="disp-en">English sentence will appear here...</div>
+                <div class="sent-cn" id="disp-cn">中文翻譯將顯示於此...</div>
+            </div>
+        </div>
+        <div class="hud-right">
+            <button class="mic-btn" id="btn-mic" onclick="toggleMic()">🎙️</button>
+            <div class="status-txt" id="status-msg">CLICK TO SPEAK</div>
+            <button class="replay-btn" onclick="speakCurrent()">🔊 Replay Audio</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 資料庫擴充 (Source: 114-2八年級單字表完整版)
+    const db = {
+        dining: [
+            {w:"Steak", m:"牛排", en:"I'd like my steak medium.", cn:"我想要五分熟的牛排。"},
+            {w:"Medium", m:"五分熟", en:"Please cook the beef medium.", cn:"請將牛肉煮至五分熟。"},
+            {w:"Menu", m:"菜單", en:"May I have the menu, please?", cn:"請問可以給我菜單嗎？"},
+            {w:"Delicious", m:"美味的", en:"The soup smells delicious.", cn:"這湯聞起來很美味。"},
+            {w:"Pork", m:"豬肉", en:"We don't eat pork.", cn:"我們不吃豬肉。"},
+            {w:"Beef", m:"牛肉", en:"The beef noodles are hot.", cn:"這碗牛肉麵很燙。"},
+            {w:"Bun", m:"小圓麵包", en:"The hamburger bun is soft.", cn:"漢堡麵包很鬆軟。"},
+            {w:"Ham", m:"火腿", en:"I want a ham sandwich.", cn:"我要一個火腿三明治。"},
+            {w:"Soup", m:"湯", en:"The bean soup tastes sweet.", cn:"這豆子湯嘗起來是甜的。"},
+            {w:"Spoon", m:"湯匙", en:"Use a spoon to drink soup.", cn:"用湯匙喝湯。"},
+            {w:"Fork", m:"叉子", en:"We use a knife and fork.", cn:"我們使用刀叉。"},
+            {w:"Chopsticks", m:"筷子", en:"Can you use chopsticks?", cn:"你會用筷子嗎？"},
+            {w:"French Fries", m:"薯條", en:"The french fries are salty.", cn:"薯條很鹹。"},
+            {w:"Toast", m:"烤麵包", en:"I have toast for breakfast.", cn:"我早餐吃烤吐司。"},
+            {w:"Waiter", m:"服務生(男)", en:"The waiter is friendly.", cn:"這位男服務生很友善。"},
+            {w:"Waitress", m:"服務生(女)", en:"The waitress brought us water.", cn:"女服務生給我們送來了水。"},
+            {w:"Knife", m:"刀子", en:"Be careful with the knife.", cn:"小心使用刀子。"},
+            {w:"Order", m:"點餐", en:"Are you ready to order?", cn:"準備好點餐了嗎？"},
+            {w:"Smell", m:"聞起來", en:"It smells good.", cn:"這聞起來很香。"},
+            {w:"Taste", m:"嚐起來", en:"It tastes sour.", cn:"這嚐起來很酸。"}
+        ],
+        shopping: [
+            {w:"Fitting Room", m:"試衣間", en:"Where is the fitting room?", cn:"試衣間在哪裡？"},
+            {w:"On Sale", m:"特價", en:"These shoes are on sale.", cn:"這些鞋子在特價。"},
+            {w:"Try on", m:"試穿", en:"Can I try on this jacket?", cn:"我可以試穿這件夾克嗎？"},
+            {w:"Wallet", m:"錢包", en:"My wallet is empty.", cn:"我的錢包是空的。"},
+            {w:"Total", m:"總共", en:"The total is 500 dollars.", cn:"總共是500元。"},
+            {w:"Belt", m:"腰帶", en:"I need a black belt.", cn:"我需要一條黑皮帶。"},
+            {w:"Shorts", m:"短褲", en:"He wears shorts in summer.", cn:"他夏天穿短褲。"},
+            {w:"Medium", m:"M號(中尺寸)", en:"Do you have a medium size?", cn:"你們有M號(中尺寸)嗎？"},
+            {w:"Jacket", m:"夾克", en:"Put on your jacket.", cn:"穿上你的夾克。"},
+            {w:"Jeans", m:"牛仔褲", en:"Blue jeans are popular.", cn:"藍色牛仔褲很受歡迎。"},
+            {w:"Skirt", m:"裙子", en:"She is wearing a pink skirt.", cn:"她穿著一條粉紅色的裙子。"},
+            {w:"Sweater", m:"毛衣", en:"This sweater is warm.", cn:"這件毛衣很暖和。"},
+            {w:"Glove", m:"手套", en:"I lost one glove.", cn:"我弄丟了一隻手套。"},
+            {w:"Tie", m:"領帶", en:"He wears a tie to work.", cn:"他繫領帶去上班。"},
+            {w:"Ring", m:"戒指", en:"That is a beautiful ring.", cn:"那是一枚美麗的戒指。"},
+            {w:"Cost", m:"花費", en:"How much does it cost?", cn:"這要多少錢？"},
+            {w:"Dress", m:"洋裝", en:"She bought a new dress.", cn:"她買了一件新洋裝。"},
+            {w:"Shirt", m:"襯衫", en:"Iron your shirt.", cn:"燙一下你的襯衫。"},
+            {w:"Pants", m:"長褲", en:"These pants are too long.", cn:"這條褲子太長了。"},
+            {w:"Clothes", m:"衣服", en:"She has many clothes.", cn:"她有很多衣服。"}
+        ],
+        health: [
+            {w:"Medicine", m:"藥", en:"Take this medicine twice a day.", cn:"這藥一天吃兩次。"},
+            {w:"Fever", m:"發燒", en:"He has a high fever.", cn:"他發高燒了。"},
+            {w:"Cough", m:"咳嗽", en:"She has a bad cough.", cn:"她咳得很厲害。"},
+            {w:"Sore Throat", m:"喉嚨痛", en:"I have a sore throat.", cn:"我喉嚨痛。"},
+            {w:"Stomachache", m:"胃痛", en:"I ate too much and got a stomachache.", cn:"我吃太多導致胃痛。"},
+            {w:"Headache", m:"頭痛", en:"This noise gives me a headache.", cn:"這噪音讓我很頭痛。"},
+            {w:"Runny Nose", m:"流鼻水", en:"He has a runny nose.", cn:"他在流鼻水。"},
+            {w:"Knee", m:"膝蓋", en:"I hurt my knee.", cn:"我弄傷了膝蓋。"},
+            {w:"Neck", m:"脖子", en:"A giraffe has a long neck.", cn:"長頸鹿有長脖子。"},
+            {w:"Shoulder", m:"肩膀", en:"He touched my shoulder.", cn:"他碰了我的肩膀。"},
+            {w:"Nail", m:"指甲", en:"Don't bite your nails.", cn:"不要咬指甲。"},
+            {w:"Blood", m:"血", en:"Blood is red.", cn:"血是紅色的。"},
+            {w:"Brain", m:"大腦", en:"Use your brain.", cn:"動動你的腦袋。"},
+            {w:"Heart", m:"心臟", en:"My heart beats fast.", cn:"我的心跳很快。"},
+            {w:"Skin", m:"皮膚", en:"Protect your skin from the sun.", cn:"保護皮膚不受太陽曬傷。"},
+            {w:"Tooth", m:"牙齒", en:"I have a toothache.", cn:"我牙痛。"},
+            {w:"Finger", m:"手指", en:"He pointed a finger at me.", cn:"他用手指著我。"},
+            {w:"Body", m:"身體", en:"Exercise is good for your body.", cn:"運動對你的身體有益。"},
+            {w:"Sick", m:"生病的", en:"She feels sick today.", cn:"她今天覺得不舒服。"},
+            {w:"Hurt", m:"疼痛/受傷", en:"My leg hurts.", cn:"我的腿很痛。"}
+        ],
+        nature: [
+            {w:"Typhoon", m:"颱風", en:"The typhoon is coming.", cn:"颱風要來了。"},
+            {w:"Earthquake", m:"地震", en:"The ground shook during the earthquake.", cn:"地震時地面在搖晃。"},
+            {w:"Dangerous", m:"危險的", en:"It is dangerous to swim here.", cn:"在這裡游泳很危險。"},
+            {w:"Scary", m:"可怕的", en:"The earthquake was scary.", cn:"那場地震很可怕。"},
+            {w:"Rubble", m:"瓦礫", en:"They found him under the rubble.", cn:"他們在瓦礫堆下發現了他。"},
+            {w:"Survivor", m:"倖存者", en:"The survivor was lucky.", cn:"那位倖存者很幸運。"},
+            {w:"Rescue", m:"救援", en:"The rescue team arrived.", cn:"救援隊抵達了。"},
+            {w:"Flood", m:"洪水", en:"The rain caused a flood.", cn:"這場雨造成了洪水。"},
+            {w:"Smoke Alarm", m:"煙霧警報器", en:"The smoke alarm rang loudly.", cn:"煙霧警報器大聲響起。"},
+            {w:"Planet", m:"星球", en:"Earth is a beautiful planet.", cn:"地球是個美麗的星球。"},
+            {w:"Rainbow", m:"彩虹", en:"Look at the rainbow!", cn:"看那道彩虹！"},
+            {w:"Climate", m:"氣候", en:"The climate is changing.", cn:"氣候正在改變。"},
+            {w:"Ocean", m:"海洋", en:"The ocean is deep.", cn:"海洋很深。"},
+            {w:"Sky", m:"天空", en:"The sky is blue.", cn:"天空是藍色的。"},
+            {w:"Moon", m:"月亮", en:"The moon is round tonight.", cn:"今晚月亮是圓的。"},
+            {w:"Star", m:"星星", en:"Stars shine at night.", cn:"星星在夜晚閃耀。"},
+            {w:"Rock", m:"岩石", en:"He sat on a rock.", cn:"他坐在一塊岩石上。"},
+            {w:"Blow", m:"吹", en:"The wind blows hard.", cn:"風吹得很猛。"},
+            {w:"Shake", m:"搖晃", en:"The room started to shake.", cn:"房間開始搖晃。"},
+            {w:"Dark", m:"黑暗的", en:"It is getting dark.", cn:"天色變暗了。"}
+        ],
+        eco: [
+            {w:"Turtle", m:"海龜", en:"Sea turtles live in the ocean.", cn:"海龜住在海洋裡。"},
+            {w:"Shark", m:"鯊魚", en:"Sharks have sharp teeth.", cn:"鯊魚有尖銳的牙齒。"},
+            {w:"Whale", m:"鯨魚", en:"The whale is the biggest animal.", cn:"鯨魚是最大的動物。"},
+            {w:"Jellyfish", m:"水母", en:"Jellyfish look like clear jelly.", cn:"水母看起來像透明果凍。"},
+            {w:"Spider", m:"蜘蛛", en:"Spiders have eight legs.", cn:"蜘蛛有八隻腳。"},
+            {w:"Ant", m:"螞蟻", en:"Ants are hardworking.", cn:"螞蟻很勤勞。"},
+            {w:"Bee", m:"蜜蜂", en:"Bees make honey.", cn:"蜜蜂會製造蜂蜜。"},
+            {w:"Snake", m:"蛇", en:"I am afraid of snakes.", cn:"我怕蛇。"},
+            {w:"Frog", m:"青蛙", en:"Frogs can jump high.", cn:"青蛙可以跳很高。"},
+            {w:"Goat", m:"山羊", en:"Goats eat grass.", cn:"山羊吃草。"},
+            {w:"Tail", m:"尾巴", en:"The dog wagged its tail.", cn:"那隻狗搖了搖尾巴。"},
+            {w:"Paw", m:"腳掌", en:"The cat has cute paws.", cn:"貓有可愛的腳掌。"},
+            {w:"Recycle", m:"回收", en:"We must recycle plastic.", cn:"我們必須回收塑膠。"},
+            {w:"Trash Can", m:"垃圾桶", en:"Put garbage in the trash can.", cn:"把垃圾丟進垃圾桶。"},
+            {w:"Straw", m:"吸管", en:"Don't use plastic straws.", cn:"不要使用塑膠吸管。"},
+            {w:"Protect", m:"保護", en:"We need to protect nature.", cn:"我們需要保護大自然。"},
+            {w:"Garbage", m:"垃圾", en:"Pick up the garbage.", cn:"把垃圾撿起來。"},
+            {w:"Plastic", m:"塑膠", en:"This bag is made of plastic.", cn:"這個袋子是塑膠做的。"},
+            {w:"Goose", m:"鵝", en:"The goose is swimming.", cn:"鵝正在游泳。"},
+            {w:"Sheep", m:"綿羊", en:"Sheep have white wool.", cn:"綿羊有白色的羊毛。"}
+        ]
+    };
+
+    let currentItem = null;
+    let recognition = null;
+    let isRecording = false;
+
+    // --- 初始化 ---
+    function init() {
+        for(let k in db) renderGrid(k);
+        initSpeech();
+    }
+
+    function renderGrid(key) {
+        const container = document.getElementById(`grid-${key}`);
+        const themeColor = document.querySelector(`button[onclick*='${key}']`).style.getPropertyValue('--theme-color');
+        
+        db[key].forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'vocab-card';
+            card.style.setProperty('--theme-color', themeColor);
+            card.innerHTML = `
+                <div class="en-word">${item.w}</div>
+                <div class="ch-word">${item.m}</div>
+            `;
+            card.onclick = () => selectWord(item, card, themeColor);
+            container.appendChild(card);
+        });
+    }
+
+    function switchTab(mode, btn) {
+        document.querySelectorAll('.module-section').forEach(m => m.classList.remove('active'));
+        document.getElementById(`mod-${mode}`).classList.add('active');
+        
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.getElementById('hud').classList.remove('active');
+        document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+        if(isRecording) toggleMic();
+    }
+
+    function selectWord(item, card, color) {
+        currentItem = item;
+        document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+
+        document.getElementById('disp-word').textContent = item.w;
+        document.getElementById('disp-mean').textContent = item.m;
+        document.getElementById('disp-en').textContent = item.en;
+        document.getElementById('disp-cn').textContent = item.cn;
+
+        const hud = document.getElementById('hud');
+        hud.style.borderTopColor = color;
+        hud.classList.add('active');
+
+        updateStatus("CLICK MIC & SPEAK", "#666");
+        speakCurrent();
+    }
+
+    function speakCurrent() {
+        if(!currentItem) return;
+        window.speechSynthesis.cancel();
+        
+        const u1 = new SpeechSynthesisUtterance(currentItem.w);
+        u1.lang = 'en-US';
+        u1.rate = 0.8;
+        
+        const u2 = new SpeechSynthesisUtterance(currentItem.en);
+        u2.lang = 'en-US';
+        u2.rate = 0.9;
+
+        window.speechSynthesis.speak(u1);
+        window.speechSynthesis.speak(u2);
+    }
+
+    // --- 語音辨識核心修復 (Speech Core Fix) ---
+    function initSpeech() {
+        // 1. 檢查瀏覽器支援
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            console.warn("Speech API missing.");
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onstart = () => {
+            isRecording = true;
+            document.getElementById('btn-mic').classList.add('recording');
+            updateStatus("LISTENING...", "#fff");
+        };
+
+        recognition.onend = () => {
+            isRecording = false;
+            document.getElementById('btn-mic').classList.remove('recording');
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results.transcript.toLowerCase();
+            verifySpeech(transcript);
+        };
+
+        recognition.onerror = (event) => {
+            isRecording = false;
+            document.getElementById('btn-mic').classList.remove('recording');
+            let msg = "ERROR";
+            if(event.error === 'not-allowed') msg = "MIC BLOCKED (Check Browser Settings)";
+            if(event.error === 'no-speech') msg = "NO SOUND";
+            updateStatus(msg, "var(--neon-pink)");
+        };
+    }
+
+    function toggleMic() {
+        if (!recognition) {
+            alert("⚠️ 您的瀏覽器不支援錄音。\n請使用 Chrome 或 Edge (電腦版)。");
+            return;
+        }
+        if (isRecording) recognition.stop();
+        else recognition.start();
+    }
+
+    function verifySpeech(spoken) {
+        if(!currentItem) return;
+        const target = currentItem.w.toLowerCase();
+        
+        // 寬鬆模糊比對
+        if (spoken.includes(target) || target.includes(spoken)) {
+            updateStatus(`CORRECT! You said: "${spoken}"`, "var(--neon-green)");
+        } else {
+            updateStatus(`TRY AGAIN. You said: "${spoken}"`, "var(--neon-pink)");
+        }
+    }
+
+    function updateStatus(text, color) {
+        const el = document.getElementById('status-msg');
+        el.textContent = text;
+        el.style.color = color;
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
