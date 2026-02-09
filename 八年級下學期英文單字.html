@@ -1,0 +1,793 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 英語大挑戰 Grade 8 Power Quiz ✨</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7; /* 活潑的紫色 */
+            --secondary-color: #a29bfe;
+            --accent-color: #00b894; /* 清爽綠 */
+            --wrong-color: #ff7675;   /* 柔和紅 */
+            --bg-gradient: linear-gradient(135deg, #81ecec 0%, #74b9ff 100%);
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Varela Round', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 讓內容靠上，避免手機版切到 */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            padding: 30px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3436;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 0px #eee;
+        }
+
+        /* 進度條優化 */
+        .progress-container {
+            background-color: #dfe6e9;
+            border-radius: 15px;
+            height: 12px;
+            width: 100%;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fd79a8, #6c5ce7);
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-radius: 15px;
+        }
+
+        /* 題目卡片動畫 */
+        .question-card {
+            background: #fff;
+            border: 2px solid #f1f2f6;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            animation: slideUp 0.5s ease-out;
+            transition: transform 0.3s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--secondary-color);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .passage-text {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #2d3436;
+            line-height: 1.5;
+        }
+
+        .options-group {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+            font-size: 1rem;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary-color);
+            background-color: #f8f0ff;
+            transform: translateX(5px);
+        }
+
+        .option-label input {
+            margin-right: 15px;
+            transform: scale(1.3);
+            accent-color: var(--primary-color);
+        }
+
+        /* Feedback Styles */
+        .option-label.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+        
+        .option-label.correct::after {
+            content: " ✅";
+            margin-left: auto;
+        }
+
+        .option-label.wrong {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option-label.wrong::after {
+            content: " ❌";
+            margin-left: auto;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 按鈕優化 */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary-color), #a29bfe);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.6);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 結果畫面與錯題複習 */
+        .result-screen {
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.8s;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border: 8px solid var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: 0 auto 20px auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .review-section {
+            margin-top: 40px;
+            text-align: left;
+        }
+        
+        .review-title {
+            text-align: center;
+            background: var(--wrong-color);
+            color: white;
+            padding: 10px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(255, 118, 117, 0.4);
+        }
+
+        .review-card {
+            background: #fff;
+            border-left: 6px solid var(--wrong-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* 簡單的紙花特效 Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* 響應式調整 */
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .btn { width: 100%; }
+            .question-text { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container">
+    <h1>✨ Grade 8 Power Quiz ✨</h1>
+    
+    <div class="progress-container">
+        <div class="progress-fill" id="progressBar"></div>
+    </div>
+
+    <div id="quiz-container">
+        <!-- Questions injected here -->
+    </div>
+
+    <div class="btn-container">
+        <button id="submitBtn" class="btn" onclick="submitPage()">Submit 🚀</button>
+        <button id="nextBtn" class="btn" style="display:none;" onclick="nextPage()">Next ⏭️</button>
+    </div>
+
+    <div id="result-screen" class="result-screen">
+        <h2>🎉 Quiz Completed! 🎉</h2>
+        <div class="score-circle" id="finalScore">0</div>
+        <p id="feedback-msg" style="font-size: 1.2rem; color: #555;">Great job!</p>
+        
+        <div id="review-area" class="review-section" style="display:none;">
+            <div style="text-align: center;"><h3 class="review-title">📝 錯題複習 (Review)</h3></div>
+            <div id="wrong-answers-list"></div>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button class="btn" onclick="location.reload()">Try Again 🔄</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* 
+       資料來源說明：
+       所有單字與例句皆取材自 114-2 Grade 8 Vocabulary List (Source 1-13)
+       確保單字不重複出現 (No Repetition Policy)
+    */
+    const rawQuestions = [
+        // === 1. 單字題 (Vocabulary) - 10題 ===
+        {
+            type: "Vocab",
+            question: "🥩 The steak is too raw. I want it ________, please.",
+            options: ["medium", "popular", "thirsty", "polite"],
+            answer: "medium",
+            explanation: "Source: 牛排熟度。Medium 意為「五分熟/中等的」。"
+        },
+        {
+            type: "Vocab",
+            question: "👕 Before you buy the jeans, go to the ________ to try them on.",
+            options: ["fitting room", "trash can", "balcony", "tunnel"],
+            answer: "fitting room",
+            explanation: "Source: 試穿衣服的地方是 fitting room (試衣間)。"
+        },
+        {
+            type: "Vocab",
+            question: "🌀 The wind is blowing hard. A ________ is coming!",
+            options: ["typhoon", "picnic", "waiter", "menu"],
+            answer: "typhoon",
+            explanation: "Source: 風很大，表示颱風 (typhoon) 來了。"
+        },
+        {
+            type: "Vocab",
+            question: "🕷️ Look at that ________! It has eight legs and looks scary.",
+            options: ["spider", "rabbit", "turtle", "goose"],
+            answer: "spider",
+            explanation: "Source: 有八隻腳且嚇人的是蜘蛛 (spider)。"
+        },
+        {
+            type: "Vocab",
+            question: "🧊 We keep milk and meat in the ________ to keep them fresh.",
+            options: ["refrigerator", "oven", "washing machine", "sofa"],
+            answer: "refrigerator",
+            explanation: "Source: 保存食物新鮮的家電是冰箱 (refrigerator)。"
+        },
+        {
+            type: "Vocab",
+            question: "🤢 I ate too much candy. Now I have a ________.",
+            options: ["stomachache", "steak", "noise", "experience"],
+            answer: "stomachache",
+            explanation: "Source: 吃太多糖果導致胃痛 (stomachache)。"
+        },
+        {
+            type: "Vocab",
+            question: "🌊 Be careful! That ________ in the water might sting(螫) you.",
+            options: ["jellyfish", "shark", "whale", "goldfish"],
+            answer: "jellyfish",
+            explanation: "Source: 水中會螫人的是水母 (jellyfish)。"
+        },
+        {
+            type: "Vocab",
+            question: "🍉 In summer, I love eating ________. It's big, green, and sweet.",
+            options: ["watermelon", "strawberry", "peach", "guava"],
+            answer: "watermelon",
+            explanation: "Source: 夏天大而綠且甜的水果是西瓜 (watermelon)。"
+        },
+        {
+            type: "Vocab",
+            question: "🔧 My uncle is an ________. He designs safe bridges.",
+            options: ["engineer", "accident", "elevator", "action"],
+            answer: "engineer",
+            explanation: "Source: 設計橋樑的職業是工程師 (engineer)。"
+        },
+        {
+            type: "Vocab",
+            question: "🚮 Please put the garbage in the ________.",
+            options: ["trash can", "mailbox", "pocket", "drawer"],
+            answer: "trash can",
+            explanation: "Source: 垃圾應丟入垃圾桶 (trash can)。"
+        },
+
+        // === 2. 文法題 (Grammar) - 10題 ===
+        {
+            type: "Grammar",
+            question: "My sister is ________ than me. She is very slim.",
+            options: ["thinner", "thin", "thinnest", "more thin"],
+            answer: "thinner",
+            explanation: "Source: 比較級用法。thin 字尾重複 n 加 ner。"
+        },
+        {
+            type: "Grammar",
+            question: "If it ________ tomorrow, we will not go camping.",
+            options: ["rains", "rain", "will rain", "rained"],
+            answer: "rains",
+            explanation: "Source: If 條件句中，未來時間用現在式代替。"
+        },
+        {
+            type: "Grammar",
+            question: "I ________ afraid of dogs, but now I like them.",
+            options: ["used to be", "use to be", "am", "was"],
+            answer: "used to be",
+            explanation: "Source: used to + V (過去習慣/狀態)。be afraid 是形容詞需加 be。"
+        },
+        {
+            type: "Grammar",
+            question: "The boys cleaned the classroom by ________.",
+            options: ["themselves", "themself", "their", "theirs"],
+            answer: "themselves",
+            explanation: "Source: 反身代名詞。The boys = They -> themselves。"
+        },
+        {
+            type: "Grammar",
+            question: "________ he is rich, he is not happy.",
+            options: ["Although", "Because", "So", "If"],
+            answer: "Although",
+            explanation: "Source: 雖然 (Although) ... 但是 ... (轉折語氣)。"
+        },
+        {
+            type: "Grammar",
+            question: "He enjoys ________ baseball on weekends.",
+            options: ["playing", "play", "to play", "played"],
+            answer: "playing",
+            explanation: "enjoy 後面必須接動名詞 (V-ing)。"
+        },
+        {
+            type: "Grammar",
+            question: "This is the ________ book in the library. I love it.",
+            options: ["most interesting", "more interesting", "interesting", "interest"],
+            answer: "most interesting",
+            explanation: "Source: 最高級用法 (the most interesting)。"
+        },
+        {
+            type: "Grammar",
+            question: "Can you tell me ________?",
+            options: ["who she is", "who is she", "she is who", "is she who"],
+            answer: "who she is",
+            explanation: "間接問句：疑問詞 + 主詞 + 動詞。"
+        },
+        {
+            type: "Grammar",
+            question: "The cake ________ by my mom yesterday.",
+            options: ["was made", "made", "is made", "makes"],
+            answer: "was made",
+            explanation: "被動語態 (past)：was + p.p. (made)。"
+        },
+        {
+            type: "Grammar",
+            question: "She felt the house ________ during the earthquake.",
+            options: ["shake", "to shake", "shook", "shakingly"],
+            answer: "shake",
+            explanation: "感官動詞 feel + O + V(原形) or V-ing。"
+        },
+
+        // === 3. 閱讀題 (Reading) - 10題 ===
+        {
+            type: "Reading",
+            passage: "<b>[At the Restaurant]</b><br>Waiter: May I take your order?<br>Lisa: Yes. I'd like a steak, please.<br>Waiter: How do you want it?<br>Lisa: Medium, please.",
+            question: "What is Lisa ordering?",
+            options: ["Steak", "Soup", "Salad", "Sandwich"],
+            answer: "Steak",
+            explanation: "Source: Lisa 說 'I'd like a steak'。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Shopping]</b><br>Mom: This dress is on sale.<br>Girl: But it is too small.<br>Mom: Let's ask for a bigger size.",
+            question: "Why does the girl NOT want the dress?",
+            options: ["It is too small.", "It is too expensive.", "She hates the color.", "It is dirty."],
+            answer: "It is too small.",
+            explanation: "Source: 女孩說 'it is too small'。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Health]</b><br>Doctor: What's wrong?<br>Boy: I have a fever and a runny nose.<br>Doctor: You have a cold. Take this medicine.",
+            question: "What should the boy do?",
+            options: ["Take medicine.", "Eat ice cream.", "Go running.", "Play games."],
+            answer: "Take medicine.",
+            explanation: "Source: 醫生指示 'Take this medicine'。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Weather]</b><br>A big typhoon hit Taiwan. The wind blew down many trees. We didn't go to school.",
+            question: "Why didn't they go to school?",
+            options: ["Because of the typhoon.", "It was Sunday.", "They were sick.", "The bus broke."],
+            answer: "Because of the typhoon.",
+            explanation: "Source: 因為颱風 (typhoon) 來襲。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Technology]</b><br>Smartphones are convenient. We use them to check maps. But using them too much hurts eyes.",
+            question: "Smartphones are ________.",
+            options: ["convenient", "heavy", "delicious", "boring"],
+            answer: "convenient",
+            explanation: "Source: 文中提到 'Smartphones are convenient'。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Disaster]</b><br>The ground started to shake. 'Earthquake!' Mom shouted. We hid under the table.",
+            question: "What happened in the story?",
+            options: ["An earthquake.", "A fire.", "A flood.", "A party."],
+            answer: "An earthquake.",
+            explanation: "Source: 地面搖晃且媽媽喊 Earthquake。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Travel]</b><br>I went to the USA. I saw many foreigners. They spoke English fast.",
+            question: "Where did the writer go?",
+            options: ["The USA.", "Japan.", "The Moon.", "Underground."],
+            answer: "The USA.",
+            explanation: "Source: 文中第一句 'I went to the USA'。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Daily Life]</b><br>My pants are dirty. I need to put them in the washing machine.",
+            question: "What will he use?",
+            options: ["A washing machine.", "A refrigerator.", "A computer.", "A bicycle."],
+            answer: "A washing machine.",
+            explanation: "Source: 褲子髒了要用洗衣機 (washing machine)。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Nature]</b><br>Spiders have eight legs. They make webs to catch bugs.",
+            question: "What do spiders catch?",
+            options: ["Bugs.", "Birds.", "Cats.", "Fish."],
+            answer: "Bugs.",
+            explanation: "Source: Spiders ... catch bugs (蟲)。"
+        },
+        {
+            type: "Reading",
+            passage: "<b>[Food]</b><br>French fries are delicious, but they have too much oil. Don't eat too many.",
+            question: "Why shouldn't we eat too many fries?",
+            options: ["They have too much oil.", "They are green.", "They are cold.", "They are sour."],
+            answer: "They have too much oil.",
+            explanation: "Source: 文中說 'they have too much oil' (油)。"
+        }
+    ];
+
+    let currentQuestions = [];
+    let currentPage = 0;
+    const questionsPerPage = 2;
+    let score = 0;
+
+    // 洗牌演算法 (Shuffle)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // 初始化測驗
+    function initQuiz() {
+        // 深層複製並洗牌
+        currentQuestions = shuffleArray(JSON.parse(JSON.stringify(rawQuestions)));
+        
+        // 選項也洗牌
+        currentQuestions.forEach(q => {
+            q.userAnswer = null;
+            q.options = shuffleArray(q.options);
+        });
+
+        currentPage = 0;
+        score = 0;
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        document.querySelector('.btn-container').style.display = 'flex';
+        renderPage();
+    }
+
+    // 渲染頁面
+    function renderPage() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        
+        const progress = (currentPage / Math.ceil(currentQuestions.length / questionsPerPage)) * 100;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+
+        const startIdx = currentPage * questionsPerPage;
+        const endIdx = Math.min(startIdx + questionsPerPage, currentQuestions.length);
+        
+        if (startIdx >= currentQuestions.length) {
+            showResult();
+            return;
+        }
+
+        for (let i = startIdx; i < endIdx; i++) {
+            const q = currentQuestions[i];
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-card';
+            qDiv.dataset.index = i;
+
+            let html = ``;
+            if (q.passage) {
+                html += `<div class="passage-text">📖 ${q.passage}</div>`;
+            }
+            // 判斷類型加 icon
+            let icon = q.type === 'Vocab' ? '🔤' : (q.type === 'Grammar' ? '⚖️' : '📑');
+            
+            html += `<div class="question-text">${icon} Q${i + 1}. ${q.question}</div>`;
+            html += `<div class="options-group">`;
+            
+            q.options.forEach((opt, optIdx) => {
+                html += `
+                    <label class="option-label" id="label-${i}-${optIdx}">
+                        <input type="radio" name="question-${i}" value="${opt}">
+                        ${opt}
+                    </label>
+                `;
+            });
+            html += `</div>`;
+            
+            html += `<div class="explanation" id="expl-${i}">
+                        <strong>💡 正確答案：${q.answer}</strong><br>
+                        ${q.explanation}
+                     </div>`;
+
+            qDiv.innerHTML = html;
+            container.appendChild(qDiv);
+        }
+
+        document.getElementById('submitBtn').style.display = 'block';
+        document.getElementById('nextBtn').style.display = 'none';
+        window.scrollTo(0, 0);
+    }
+
+    // 提交本頁答案
+    function submitPage() {
+        const startIdx = currentPage * questionsPerPage;
+        const endIdx = Math.min(startIdx + questionsPerPage, currentQuestions.length);
+        let allAnswered = true;
+
+        // 檢查是否都選了
+        for (let i = startIdx; i < endIdx; i++) {
+            const selected = document.querySelector(`input[name="question-${i}"]:checked`);
+            if (!selected) {
+                allAnswered = false;
+                break;
+            }
+        }
+
+        if (!allAnswered) {
+            alert("⚠️ 請回答完本頁所有題目再提交！ (Please answer all questions)");
+            return;
+        }
+
+        // 批改邏輯
+        for (let i = startIdx; i < endIdx; i++) {
+            const q = currentQuestions[i];
+            const selectedInput = document.querySelector(`input[name="question-${i}"]:checked`);
+            const selectedVal = selectedInput.value;
+            const correctVal = q.answer;
+
+            q.userAnswer = selectedVal; // 紀錄答案供複習用
+
+            document.getElementById(`expl-${i}`).style.display = 'block';
+
+            // 鎖定選項
+            const inputs = document.querySelectorAll(`input[name="question-${i}"]`);
+            inputs.forEach(inp => inp.disabled = true);
+
+            // 標示顏色
+            const labels = document.querySelectorAll(`#quiz-container .question-card[data-index="${i}"] .option-label`);
+            labels.forEach(label => {
+                const input = label.querySelector('input');
+                if (input.value === correctVal) {
+                    label.classList.add('correct');
+                }
+                if (input.checked && input.value !== correctVal) {
+                    label.classList.add('wrong');
+                }
+            });
+
+            if (selectedVal === correctVal) {
+                score++;
+            }
+        }
+
+        document.getElementById('submitBtn').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+
+    function nextPage() {
+        currentPage++;
+        renderPage();
+    }
+
+    // 顯示結果與紙花特效
+    function showResult() {
+        document.getElementById('quiz-container').style.display = 'none';
+        document.querySelector('.btn-container').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('progressBar').style.width = '100%';
+        
+        const total = currentQuestions.length;
+        const finalScore = Math.round((score / total) * 100);
+        document.getElementById('finalScore').textContent = finalScore;
+
+        // Feedback Message
+        const msg = document.getElementById('feedback-msg');
+        if (finalScore === 100) {
+            msg.textContent = "🏆 Perfect! 完美無缺！";
+            startConfetti();
+        } else if (finalScore >= 80) {
+            msg.textContent = "✨ Excellent! 非常優秀！";
+            startConfetti();
+        } else if (finalScore >= 60) {
+            msg.textContent = "💪 Good job! 再接再厲！";
+        } else {
+            msg.textContent = "📚 Keep practicing! 加油！";
+        }
+
+        // 產生錯題列表
+        const wrongListContainer = document.getElementById('wrong-answers-list');
+        const reviewArea = document.getElementById('review-area');
+        wrongListContainer.innerHTML = '';
+        
+        const wrongQuestions = currentQuestions.filter(q => q.userAnswer !== q.answer);
+
+        if (wrongQuestions.length > 0) {
+            reviewArea.style.display = 'block';
+            wrongQuestions.forEach((q) => {
+                let html = `
+                    <div class="review-card">
+                        <div style="font-weight:bold; color:#2d3436; margin-bottom:10px;">
+                            ${q.passage ? '[閱讀] ' : ''} ${q.question}
+                        </div>
+                        <div style="color:#e74c3c;">❌ 你的答案: ${q.userAnswer}</div>
+                        <div style="color:#27ae60; font-weight:bold;">✅ 正確答案: ${q.answer}</div>
+                        <div style="background:#f1f2f6; padding:8px; margin-top:8px; border-radius:5px; font-size:0.9rem;">
+                            💡 ${q.explanation}
+                        </div>
+                    </div>
+                `;
+                wrongListContainer.innerHTML += html;
+            });
+        } else {
+            reviewArea.style.display = 'block';
+            wrongListContainer.innerHTML = '<div style="text-align:center; color:#00b894; font-weight:bold; font-size:1.2rem;">💯 全對！太強了！</div>';
+        }
+    }
+
+    // 簡單的紙花特效函式
+    function startConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const pieces = [];
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'];
+        
+        for(let i=0; i<150; i++) {
+            pieces.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                w: Math.random() * 10 + 5,
+                h: Math.random() * 10 + 5,
+                c: colors[Math.floor(Math.random() * colors.length)],
+                s: Math.random() * 2 + 2
+            });
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieces.forEach(p => {
+                ctx.fillStyle = p.c;
+                ctx.fillRect(p.x, p.y, p.w, p.h);
+                p.y += p.s;
+                if(p.y > canvas.height) p.y = -20;
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+        // 5秒後停止
+        setTimeout(() => { canvas.style.display = 'none'; }, 5000);
+    }
+
+    window.onload = initQuiz;
+
+</script>
+
+</body>
+</html>
+```
