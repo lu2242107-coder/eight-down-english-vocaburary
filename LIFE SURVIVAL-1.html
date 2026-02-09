@@ -3,595 +3,582 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS LEARNING | Grade 8 Ultimate Database</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Noto+Sans+TC:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>NEXUS INFINITY | Grade 8 Full Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@600;900&family=Merriweather:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #020205;
+            --bg-deep: #050505;
+            --panel-glass: rgba(20, 23, 28, 0.95);
             --neon-blue: #00f3ff;
             --neon-pink: #ff0055;
             --neon-green: #0aff0a;
             --neon-yellow: #fcee0a;
             --neon-purple: #bc13fe;
-            --glass-panel: rgba(20, 25, 40, 0.7);
-            --border-dim: rgba(255, 255, 255, 0.1);
+            --neon-orange: #ff9d00;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg-deep);
-            background-image: 
-                linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 243, 255, 0.03) 10px, rgba(0, 243, 255, 0.03) 11px);
-            background-attachment: fixed;
-            color: #fff;
-            font-family: 'Rajdhani', 'Noto Sans TC', sans-serif;
-            min-height: 100vh;
-            padding-bottom: 350px; /* Space for HUD */
-        }
-
-        /* --- HEADER --- */
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            background: rgba(5, 5, 10, 0.95);
-            border-bottom: 2px solid var(--neon-blue);
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(5px);
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            background: linear-gradient(90deg, #fff, var(--neon-blue), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .db-counter {
-            color: #888;
-            font-family: 'Orbitron';
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-
-        /* --- NAV TABS --- */
-        .nav-wrapper {
+            background-image: repeating-linear-gradient(45deg, #0a0a0a 0, #0a0a0a 1px, transparent 0, transparent 50%);
+            background-size: 20px 20px;
+            color: #eee;
+            font-family: 'Roboto Mono', 'Noto Sans TC', sans-serif;
+            height: 100vh;
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px auto;
-            max-width: 1200px;
-            padding: 0 15px;
-        }
-
-        .nav-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-dim);
-            color: #aaa;
-            padding: 12px 20px;
-            font-family: 'Orbitron';
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-            border-radius: 4px;
-            flex: 1 1 auto;
-            min-width: 120px;
-            text-align: center;
-        }
-
-        .nav-btn:hover { border-color: #fff; color: #fff; }
-
-        .nav-btn.active {
-            background: var(--theme-color);
-            border-color: #fff;
-            color: #000;
-            font-weight: bold;
-            box-shadow: 0 0 20px var(--theme-color);
-        }
-
-        /* --- GRID SYSTEM --- */
-        .module-section {
-            display: none;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            animation: slideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        .module-section.active { display: block; }
-
-        @keyframes slideUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
-
-        .vocab-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-        }
-
-        .vocab-card {
-            background: var(--glass-panel);
-            border: 1px solid var(--border-dim);
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 6px;
-            position: relative;
+            flex-direction: column;
             overflow: hidden;
         }
 
-        .vocab-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 3px;
-            background: var(--theme-color);
-            opacity: 0.5;
+        /* --- 1. Top Navigation (Scrollable) --- */
+        .nav-bar {
+            height: 60px;
+            background: rgba(0,0,0,0.8);
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 10px;
+            overflow-x: auto;
+            flex-shrink: 0;
+            white-space: nowrap;
+            z-index: 10;
         }
 
-        .vocab-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--theme-color);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        .brand {
+            font-family: 'Orbitron';
+            color: #fff;
+            font-size: 1.2rem;
+            margin-right: 10px;
+            text-shadow: 0 0 10px var(--neon-blue);
         }
 
-        .vocab-card.selected {
-            background: var(--theme-color);
+        .nav-pill {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #444;
+            color: #888;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .nav-pill:hover { border-color: #fff; color: #fff; }
+        .nav-pill.active {
+            background: var(--theme);
             border-color: #fff;
-            box-shadow: 0 0 25px var(--theme-color);
-        }
-        
-        .vocab-card.selected .en-word, .vocab-card.selected .ch-word {
             color: #000;
-            text-shadow: none;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--theme);
         }
 
-        .en-word { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 5px; }
-        .ch-word { font-size: 0.95rem; color: #bbb; }
+        /* --- 2. Main Grid (75% Height) --- */
+        .grid-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 26vh; /* Reserve space for HUD */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            align-content: start;
+        }
 
-        /* --- HUD CONSOLE --- */
+        .word-card {
+            background: rgba(30, 35, 45, 0.6);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--theme);
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .word-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.1); }
+        .word-card.active { background: rgba(255,255,255,0.15); border-color: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+
+        .wc-icon { font-size: 2rem; position: absolute; bottom: 5px; right: 5px; opacity: 0.2; }
+        .wc-word { font-size: 1.1rem; font-weight: 700; color: #fff; z-index: 1; }
+        .wc-mean { font-size: 0.85rem; color: #bbb; z-index: 1; line-height: 1.2; margin-top: 5px;}
+
+        /* --- 3. HUD Panel (Strict 25%) --- */
         .hud-panel {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 320px;
-            background: rgba(8, 8, 12, 0.98);
-            border-top: 3px solid var(--neon-blue);
-            z-index: 999;
-            transform: translateY(110%);
-            transition: transform 0.3s ease-out;
-            box-shadow: 0 -10px 50px rgba(0,0,0,0.8);
+            height: 25vh;
+            min-height: 200px;
+            background: var(--panel-glass);
+            border-top: 2px solid var(--neon-blue);
+            backdrop-filter: blur(12px);
+            z-index: 100;
             display: flex;
-            justify-content: center;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.8);
+            transform: translateY(110%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .hud-panel.active { transform: translateY(0); }
 
-        .hud-inner {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            padding: 25px;
-            gap: 30px;
-        }
-
-        .hud-left {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-right: 1px solid #333;
-            padding-right: 20px;
-        }
-
-        .word-display {
-            font-family: 'Orbitron';
-            font-size: 2.8rem;
-            color: var(--neon-yellow);
-            line-height: 1;
-            margin-bottom: 5px;
-        }
-
-        .mean-display {
-            font-size: 1.2rem;
-            color: #fff;
-            background: rgba(255,255,255,0.1);
-            padding: 3px 10px;
-            border-radius: 4px;
-            align-self: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .sentence-area {
-            background: rgba(0, 243, 255, 0.03);
-            border-left: 4px solid var(--neon-blue);
-            padding: 15px;
-        }
-
-        .sent-en { font-size: 1.1rem; color: #eee; margin-bottom: 8px; line-height: 1.5; }
-        .sent-cn { font-size: 1rem; color: #888; font-weight: 300; }
-
-        .hud-right {
+        /* Left Info */
+        .hud-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            gap: 15px;
+            height: 100%;
+        }
+
+        .h-header { display: flex; align-items: center; gap: 15px; margin-bottom: 8px; }
+        .h-emoji { font-size: 2.5rem; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); animation: float 3s infinite; }
+        .h-word { font-family: 'Orbitron'; font-size: 2.2rem; font-weight: 900; color: var(--neon-yellow); }
+        
+        .h-mean-box { 
+            display: flex; gap: 8px; font-size: 0.95rem; color: #ddd; 
+            background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 4px; 
+            width: fit-content; margin-bottom: 8px;
+        }
+
+        /* Phonetics */
+        .h-ipa {
+            display: flex; gap: 15px; color: #aaa; font-family: 'Merriweather', serif; font-size: 0.9rem; margin-bottom: 10px;
+        }
+        .ipa-tag { font-family: sans-serif; font-weight: bold; font-size: 0.7rem; padding: 1px 4px; border-radius: 2px; color: #000; margin-right: 5px; }
+
+        /* Context Sentence */
+        .h-context {
+            border-left: 3px solid #666;
+            padding-left: 12px;
+            position: relative;
+            background: rgba(255,255,255,0.02);
+            padding: 8px 12px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .tone-badge {
+            position: absolute; right: 10px; top: 5px;
+            font-size: 0.7rem; font-weight: bold; color: #000;
+            padding: 2px 6px; border-radius: 10px;
+            opacity: 0.8;
+        }
+
+        .sent-en { font-size: 1rem; color: #fff; margin-bottom: 4px; line-height: 1.4; padding-right: 60px; }
+        .sent-cn { font-size: 0.85rem; color: #888; }
+
+        /* Right Controls */
+        .hud-ctrl {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-width: 90px;
         }
 
         .mic-btn {
-            width: 80px; height: 80px;
+            width: 70px; height: 70px;
             border-radius: 50%;
-            border: 2px solid #444;
+            border: 2px solid #555;
             background: transparent;
-            color: #444;
-            font-size: 2.5rem;
+            color: #666;
+            font-size: 2rem;
             cursor: pointer;
             transition: 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
-
         .mic-btn:hover { border-color: #fff; color: #fff; }
-
-        .mic-btn.recording {
-            border-color: var(--neon-pink);
-            background: var(--neon-pink);
-            color: #fff;
+        .mic-btn.active {
+            border-color: var(--neon-pink); background: var(--neon-pink); color: #fff;
             animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.1);} 100% {transform:scale(1);} }
-
-        .status-txt {
-            font-family: 'Orbitron';
-            font-size: 0.9rem;
-            color: #666;
-            text-align: center;
-            min-height: 45px;
-        }
+        .status-txt { font-family: 'Orbitron'; font-size: 0.7rem; color: #666; height: 15px; }
 
         .replay-btn {
-            background: transparent;
-            border: 1px solid #444;
-            color: #888;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.2s;
+            background: none; border: 1px solid #444; color: #888;
+            padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; cursor: pointer;
         }
         .replay-btn:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
 
+        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
+        @keyframes pulse { 0%{transform:scale(1);} 50%{transform:scale(1.1);} 100%{transform:scale(1);} }
+
+        /* Tone Styles */
+        .tone-q { background: var(--neon-yellow); }
+        .tone-e { background: var(--neon-pink); }
+        .tone-s { background: var(--neon-blue); }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .hud-inner { flex-direction: column; padding: 15px; }
-            .hud-left { border-right: none; border-bottom: 1px solid #333; padding-bottom: 15px; padding-right: 0; }
-            .hud-panel { height: auto; }
-            .word-display { font-size: 2rem; }
-            body { padding-bottom: 450px; }
+            .hud-panel { flex-direction: column; height: auto; padding: 15px; align-items: stretch; }
+            .h-emoji { display: none; }
+            .hud-ctrl { flex-direction: row; justify-content: space-between; width: 100%; margin-top: 10px; }
+            .h-word { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
-<a href="index.html" style="font-size: 20px; color: blue;">👉 考場</a>
-<a href="Landing page.html" style="font-size: 16px; color: blue;">👉大廳</a>
-<header>
-    <h1>NEXUS <span style="color:var(--neon-blue)">ULTIMATE</span></h1>
-    <div class="db-counter">DATA STATUS: 100+ WORDS LOADED</div>
-</header>
 
-<div class="nav-wrapper">
-    <button class="nav-btn active" style="--theme-color:var(--neon-blue)" onclick="switchTab('dining', this)">🍖 Dining (飲食)</button>
-    <button class="nav-btn" style="--theme-color:var(--neon-pink)" onclick="switchTab('shopping', this)">👗 Shopping (購物)</button>
-    <button class="nav-btn" style="--theme-color:var(--neon-green)" onclick="switchTab('health', this)">🚑 Health (健康)</button>
-    <button class="nav-btn" style="--theme-color:var(--neon-yellow)" onclick="switchTab('nature', this)">🌪️ Nature (災害)</button>
-    <button class="nav-btn" style="--theme-color:var(--neon-purple)" onclick="switchTab('eco', this)">🐢 Eco (生態)</button>
-</div>
-
-<!-- Modules -->
-<div id="mod-dining" class="module-section active">
-    <div class="vocab-grid" id="grid-dining"></div>
-</div>
-<div id="mod-shopping" class="module-section">
-    <div class="vocab-grid" id="grid-shopping"></div>
-</div>
-<div id="mod-health" class="module-section">
-    <div class="vocab-grid" id="grid-health"></div>
-</div>
-<div id="mod-nature" class="module-section">
-    <div class="vocab-grid" id="grid-nature"></div>
-</div>
-<div id="mod-eco" class="module-section">
-    <div class="vocab-grid" id="grid-eco"></div>
+<div class="nav-bar">
+    <div class="brand">NEXUS</div>
+    <div class="nav-pill active" style="--theme:var(--neon-purple)" onclick="filter('multi')">🔀 多義字 Polysemy</div>
+    <div class="nav-pill" style="--theme:var(--neon-blue)" onclick="filter('dining')">🍔 飲食 Dining</div>
+    <div class="nav-pill" style="--theme:var(--neon-pink)" onclick="filter('style')">👗 購物 Style</div>
+    <div class="nav-pill" style="--theme:var(--neon-green)" onclick="filter('body')">🚑 健康 Body</div>
+    <div class="nav-pill" style="--theme:var(--neon-yellow)" onclick="filter('nature')">🌪️ 自然 Nature</div>
+    <div class="nav-pill" style="--theme:var(--neon-orange)" onclick="filter('jobs')">💼 職業 Jobs</div>
+    <div class="nav-pill" style="--theme:#00a8ff" onclick="filter('city')">🏙️ 城市 City</div>
+    <div class="nav-pill" style="--theme:#a4b0be" onclick="filter('home')">🏠 居家 Home</div>
+    <div class="nav-pill" style="--theme:#ff4d4d" onclick="filter('abstract')">⚡ 抽象 Abstract</div>
+    <div class="nav-pill" style="--theme:#2ecc71" onclick="filter('animals')">🐢 動物 Animals</div>
 </div>
 
-<!-- HUD -->
+<div class="grid-container" id="grid">
+    <!-- JS Cards -->
+</div>
+
 <div class="hud-panel" id="hud">
-    <div class="hud-inner">
-        <div class="hud-left">
-            <div class="word-display" id="disp-word">READY</div>
-            <div class="mean-display" id="disp-mean">Select a word</div>
-            <div class="sentence-area">
-                <div class="sent-en" id="disp-en">English sentence will appear here...</div>
-                <div class="sent-cn" id="disp-cn">中文翻譯將顯示於此...</div>
+    <div class="hud-content">
+        <div class="h-header">
+            <div class="h-emoji" id="d-icon">💡</div>
+            <div>
+                <div class="h-word" id="d-word">WORD</div>
+                <div class="h-mean-box" id="d-mean">Meaning 1 | Meaning 2</div>
             </div>
         </div>
-        <div class="hud-right">
-            <button class="mic-btn" id="btn-mic" onclick="toggleMic()">🎙️</button>
-            <div class="status-txt" id="status-msg">CLICK TO SPEAK</div>
-            <button class="replay-btn" onclick="speakCurrent()">🔊 Replay Audio</button>
+
+        <div class="h-ipa">
+            <span><span class="ipa-tag" style="background:var(--neon-pink)">US</span><span id="d-us">/us/</span></span>
+            <span><span class="ipa-tag" style="background:var(--neon-blue)">UK</span><span id="d-uk">/uk/</span></span>
         </div>
+
+        <div class="h-context" id="ctx-box">
+            <div class="tone-badge" id="d-tone">Statement</div>
+            <div class="sent-en" id="d-en">English sentence placeholder.</div>
+            <div class="sent-cn" id="d-cn">中文翻譯佔位符。</div>
+        </div>
+    </div>
+
+    <div class="hud-ctrl">
+        <div class="status-txt" id="status">READY</div>
+        <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎙️</button>
+        <button class="replay-btn" onclick="speakCurrent()">🔊 PLAY</button>
     </div>
 </div>
 
 <script>
-    // 資料庫擴充 (Source: 114-2八年級單字表完整版)
-    const db = {
-        dining: [
-            {w:"Steak", m:"牛排", en:"I'd like my steak medium.", cn:"我想要五分熟的牛排。"},
-            {w:"Medium", m:"五分熟", en:"Please cook the beef medium.", cn:"請將牛肉煮至五分熟。"},
-            {w:"Menu", m:"菜單", en:"May I have the menu, please?", cn:"請問可以給我菜單嗎？"},
-            {w:"Delicious", m:"美味的", en:"The soup smells delicious.", cn:"這湯聞起來很美味。"},
-            {w:"Pork", m:"豬肉", en:"We don't eat pork.", cn:"我們不吃豬肉。"},
-            {w:"Beef", m:"牛肉", en:"The beef noodles are hot.", cn:"這碗牛肉麵很燙。"},
-            {w:"Bun", m:"小圓麵包", en:"The hamburger bun is soft.", cn:"漢堡麵包很鬆軟。"},
-            {w:"Ham", m:"火腿", en:"I want a ham sandwich.", cn:"我要一個火腿三明治。"},
-            {w:"Soup", m:"湯", en:"The bean soup tastes sweet.", cn:"這豆子湯嘗起來是甜的。"},
-            {w:"Spoon", m:"湯匙", en:"Use a spoon to drink soup.", cn:"用湯匙喝湯。"},
-            {w:"Fork", m:"叉子", en:"We use a knife and fork.", cn:"我們使用刀叉。"},
-            {w:"Chopsticks", m:"筷子", en:"Can you use chopsticks?", cn:"你會用筷子嗎？"},
-            {w:"French Fries", m:"薯條", en:"The french fries are salty.", cn:"薯條很鹹。"},
-            {w:"Toast", m:"烤麵包", en:"I have toast for breakfast.", cn:"我早餐吃烤吐司。"},
-            {w:"Waiter", m:"服務生(男)", en:"The waiter is friendly.", cn:"這位男服務生很友善。"},
-            {w:"Waitress", m:"服務生(女)", en:"The waitress brought us water.", cn:"女服務生給我們送來了水。"},
-            {w:"Knife", m:"刀子", en:"Be careful with the knife.", cn:"小心使用刀子。"},
-            {w:"Order", m:"點餐", en:"Are you ready to order?", cn:"準備好點餐了嗎？"},
-            {w:"Smell", m:"聞起來", en:"It smells good.", cn:"這聞起來很香。"},
-            {w:"Taste", m:"嚐起來", en:"It tastes sour.", cn:"這嚐起來很酸。"}
-        ],
-        shopping: [
-            {w:"Fitting Room", m:"試衣間", en:"Where is the fitting room?", cn:"試衣間在哪裡？"},
-            {w:"On Sale", m:"特價", en:"These shoes are on sale.", cn:"這些鞋子在特價。"},
-            {w:"Try on", m:"試穿", en:"Can I try on this jacket?", cn:"我可以試穿這件夾克嗎？"},
-            {w:"Wallet", m:"錢包", en:"My wallet is empty.", cn:"我的錢包是空的。"},
-            {w:"Total", m:"總共", en:"The total is 500 dollars.", cn:"總共是500元。"},
-            {w:"Belt", m:"腰帶", en:"I need a black belt.", cn:"我需要一條黑皮帶。"},
-            {w:"Shorts", m:"短褲", en:"He wears shorts in summer.", cn:"他夏天穿短褲。"},
-            {w:"Medium", m:"M號(中尺寸)", en:"Do you have a medium size?", cn:"你們有M號(中尺寸)嗎？"},
-            {w:"Jacket", m:"夾克", en:"Put on your jacket.", cn:"穿上你的夾克。"},
-            {w:"Jeans", m:"牛仔褲", en:"Blue jeans are popular.", cn:"藍色牛仔褲很受歡迎。"},
-            {w:"Skirt", m:"裙子", en:"She is wearing a pink skirt.", cn:"她穿著一條粉紅色的裙子。"},
-            {w:"Sweater", m:"毛衣", en:"This sweater is warm.", cn:"這件毛衣很暖和。"},
-            {w:"Glove", m:"手套", en:"I lost one glove.", cn:"我弄丟了一隻手套。"},
-            {w:"Tie", m:"領帶", en:"He wears a tie to work.", cn:"他繫領帶去上班。"},
-            {w:"Ring", m:"戒指", en:"That is a beautiful ring.", cn:"那是一枚美麗的戒指。"},
-            {w:"Cost", m:"花費", en:"How much does it cost?", cn:"這要多少錢？"},
-            {w:"Dress", m:"洋裝", en:"She bought a new dress.", cn:"她買了一件新洋裝。"},
-            {w:"Shirt", m:"襯衫", en:"Iron your shirt.", cn:"燙一下你的襯衫。"},
-            {w:"Pants", m:"長褲", en:"These pants are too long.", cn:"這條褲子太長了。"},
-            {w:"Clothes", m:"衣服", en:"She has many clothes.", cn:"她有很多衣服。"}
-        ],
-        health: [
-            {w:"Medicine", m:"藥", en:"Take this medicine twice a day.", cn:"這藥一天吃兩次。"},
-            {w:"Fever", m:"發燒", en:"He has a high fever.", cn:"他發高燒了。"},
-            {w:"Cough", m:"咳嗽", en:"She has a bad cough.", cn:"她咳得很厲害。"},
-            {w:"Sore Throat", m:"喉嚨痛", en:"I have a sore throat.", cn:"我喉嚨痛。"},
-            {w:"Stomachache", m:"胃痛", en:"I ate too much and got a stomachache.", cn:"我吃太多導致胃痛。"},
-            {w:"Headache", m:"頭痛", en:"This noise gives me a headache.", cn:"這噪音讓我很頭痛。"},
-            {w:"Runny Nose", m:"流鼻水", en:"He has a runny nose.", cn:"他在流鼻水。"},
-            {w:"Knee", m:"膝蓋", en:"I hurt my knee.", cn:"我弄傷了膝蓋。"},
-            {w:"Neck", m:"脖子", en:"A giraffe has a long neck.", cn:"長頸鹿有長脖子。"},
-            {w:"Shoulder", m:"肩膀", en:"He touched my shoulder.", cn:"他碰了我的肩膀。"},
-            {w:"Nail", m:"指甲", en:"Don't bite your nails.", cn:"不要咬指甲。"},
-            {w:"Blood", m:"血", en:"Blood is red.", cn:"血是紅色的。"},
-            {w:"Brain", m:"大腦", en:"Use your brain.", cn:"動動你的腦袋。"},
-            {w:"Heart", m:"心臟", en:"My heart beats fast.", cn:"我的心跳很快。"},
-            {w:"Skin", m:"皮膚", en:"Protect your skin from the sun.", cn:"保護皮膚不受太陽曬傷。"},
-            {w:"Tooth", m:"牙齒", en:"I have a toothache.", cn:"我牙痛。"},
-            {w:"Finger", m:"手指", en:"He pointed a finger at me.", cn:"他用手指著我。"},
-            {w:"Body", m:"身體", en:"Exercise is good for your body.", cn:"運動對你的身體有益。"},
-            {w:"Sick", m:"生病的", en:"She feels sick today.", cn:"她今天覺得不舒服。"},
-            {w:"Hurt", m:"疼痛/受傷", en:"My leg hurts.", cn:"我的腿很痛。"}
-        ],
-        nature: [
-            {w:"Typhoon", m:"颱風", en:"The typhoon is coming.", cn:"颱風要來了。"},
-            {w:"Earthquake", m:"地震", en:"The ground shook during the earthquake.", cn:"地震時地面在搖晃。"},
-            {w:"Dangerous", m:"危險的", en:"It is dangerous to swim here.", cn:"在這裡游泳很危險。"},
-            {w:"Scary", m:"可怕的", en:"The earthquake was scary.", cn:"那場地震很可怕。"},
-            {w:"Rubble", m:"瓦礫", en:"They found him under the rubble.", cn:"他們在瓦礫堆下發現了他。"},
-            {w:"Survivor", m:"倖存者", en:"The survivor was lucky.", cn:"那位倖存者很幸運。"},
-            {w:"Rescue", m:"救援", en:"The rescue team arrived.", cn:"救援隊抵達了。"},
-            {w:"Flood", m:"洪水", en:"The rain caused a flood.", cn:"這場雨造成了洪水。"},
-            {w:"Smoke Alarm", m:"煙霧警報器", en:"The smoke alarm rang loudly.", cn:"煙霧警報器大聲響起。"},
-            {w:"Planet", m:"星球", en:"Earth is a beautiful planet.", cn:"地球是個美麗的星球。"},
-            {w:"Rainbow", m:"彩虹", en:"Look at the rainbow!", cn:"看那道彩虹！"},
-            {w:"Climate", m:"氣候", en:"The climate is changing.", cn:"氣候正在改變。"},
-            {w:"Ocean", m:"海洋", en:"The ocean is deep.", cn:"海洋很深。"},
-            {w:"Sky", m:"天空", en:"The sky is blue.", cn:"天空是藍色的。"},
-            {w:"Moon", m:"月亮", en:"The moon is round tonight.", cn:"今晚月亮是圓的。"},
-            {w:"Star", m:"星星", en:"Stars shine at night.", cn:"星星在夜晚閃耀。"},
-            {w:"Rock", m:"岩石", en:"He sat on a rock.", cn:"他坐在一塊岩石上。"},
-            {w:"Blow", m:"吹", en:"The wind blows hard.", cn:"風吹得很猛。"},
-            {w:"Shake", m:"搖晃", en:"The room started to shake.", cn:"房間開始搖晃。"},
-            {w:"Dark", m:"黑暗的", en:"It is getting dark.", cn:"天色變暗了。"}
-        ],
-        eco: [
-            {w:"Turtle", m:"海龜", en:"Sea turtles live in the ocean.", cn:"海龜住在海洋裡。"},
-            {w:"Shark", m:"鯊魚", en:"Sharks have sharp teeth.", cn:"鯊魚有尖銳的牙齒。"},
-            {w:"Whale", m:"鯨魚", en:"The whale is the biggest animal.", cn:"鯨魚是最大的動物。"},
-            {w:"Jellyfish", m:"水母", en:"Jellyfish look like clear jelly.", cn:"水母看起來像透明果凍。"},
-            {w:"Spider", m:"蜘蛛", en:"Spiders have eight legs.", cn:"蜘蛛有八隻腳。"},
-            {w:"Ant", m:"螞蟻", en:"Ants are hardworking.", cn:"螞蟻很勤勞。"},
-            {w:"Bee", m:"蜜蜂", en:"Bees make honey.", cn:"蜜蜂會製造蜂蜜。"},
-            {w:"Snake", m:"蛇", en:"I am afraid of snakes.", cn:"我怕蛇。"},
-            {w:"Frog", m:"青蛙", en:"Frogs can jump high.", cn:"青蛙可以跳很高。"},
-            {w:"Goat", m:"山羊", en:"Goats eat grass.", cn:"山羊吃草。"},
-            {w:"Tail", m:"尾巴", en:"The dog wagged its tail.", cn:"那隻狗搖了搖尾巴。"},
-            {w:"Paw", m:"腳掌", en:"The cat has cute paws.", cn:"貓有可愛的腳掌。"},
-            {w:"Recycle", m:"回收", en:"We must recycle plastic.", cn:"我們必須回收塑膠。"},
-            {w:"Trash Can", m:"垃圾桶", en:"Put garbage in the trash can.", cn:"把垃圾丟進垃圾桶。"},
-            {w:"Straw", m:"吸管", en:"Don't use plastic straws.", cn:"不要使用塑膠吸管。"},
-            {w:"Protect", m:"保護", en:"We need to protect nature.", cn:"我們需要保護大自然。"},
-            {w:"Garbage", m:"垃圾", en:"Pick up the garbage.", cn:"把垃圾撿起來。"},
-            {w:"Plastic", m:"塑膠", en:"This bag is made of plastic.", cn:"這個袋子是塑膠做的。"},
-            {w:"Goose", m:"鵝", en:"The goose is swimming.", cn:"鵝正在游泳。"},
-            {w:"Sheep", m:"綿羊", en:"Sheep have white wool.", cn:"綿羊有白色的羊毛。"}
-        ]
-    };
+    // --- 終極資料庫：114-1 & 114-2 全來源單字 (含圖像、多義、長句、語調) ---
+    // t: Tone (q=Question, e=Exclamation, s=Statement)
+    const db = [
+        // --- 1. Polysemy (一字多義/多詞性) ---
+        {c:'multi', w:'Fan', i:'💨', us:'/fæn/', uk:'/fæn/', m:'名 粉絲；名 電扇', t:'e',
+         en:"I am a huge fan of this singer, but it is so hot here I need a fan!", cn:"我是這位歌手的超級粉絲，但這裡太熱了我需要電風扇！"},
+        {c:'multi', w:'Watch', i:'⌚', us:'/wɑːtʃ/', uk:'/wɒtʃ/', m:'名 手錶；動 觀看', t:'e',
+         en:"Watch out! You almost dropped your expensive watch on the floor!", cn:"小心！你差點把你昂貴的手錶掉在地上了！"},
+        {c:'multi', w:'Park', i:'🚗', us:'/pɑːrk/', uk:'/pɑːk/', m:'名 公園；動 停車', t:'s',
+         en:"You cannot park your car here; we must walk to the park.", cn:"你不能把車停在這裡；我們必須走到公園去。"},
+        {c:'multi', w:'Light', i:'💡', us:'/laɪt/', uk:'/laɪt/', m:'名 燈光；形 輕的', t:'q',
+         en:"Could you turn on the light? This box is light enough to carry.", cn:"可以請你開燈嗎？這個箱子夠輕，可以搬得動。"},
+        {c:'multi', w:'Trip', i:'🧳', us:'/trɪp/', uk:'/trɪp/', m:'名 旅行；動 絆倒', t:'q',
+         en:"Did you enjoy your trip, or did you trip and fall on the way?", cn:"你享受你的旅行嗎，還是你在路上絆倒了？"},
+        {c:'multi', w:'Ring', i:'💍', us:'/rɪŋ/', uk:'/rɪŋ/', m:'名 戒指；動 響鈴', t:'q',
+         en:"Did you hear the phone ring while you were buying that diamond ring?", cn:"你在買那枚鑽戒的時候有聽到電話響嗎？"},
+        {c:'multi', w:'Show', i:'🎭', us:'/ʃoʊ/', uk:'/ʃəʊ/', m:'名 表演；動 展示', t:'s',
+         en:"Please show me your ticket before you enter the magic show.", cn:"進入魔術秀之前請出示你的票。"},
+        {c:'multi', w:'Play', i:'🎮', us:'/pleɪ/', uk:'/pleɪ/', m:'動 玩；名 戲劇', t:'s',
+         en:"After we play basketball, let's go watch a school play.", cn:"我們打完籃球後，一起去看學校的戲劇表演吧。"},
+        {c:'multi', w:'Order', i:'📝', us:'/ˈɔːrdər/', uk:'/ˈɔːdə/', m:'動 點餐；名 命令', t:'s',
+         en:"The king gave an order, but I just want to order some food.", cn:"國王下達了命令，但我只是想點一些食物。"},
+
+        // --- 2. Dining (飲食) ---
+        {c:'dining', w:'Steak', i:'🥩', us:'/steɪk/', uk:'/steɪk/', m:'名 牛排', t:'q',
+         en:"Would you like your steak medium, or do you prefer it well-done?", cn:"你的牛排想要五分熟，還是比較喜歡全熟？"},
+        {c:'dining', w:'Delicious', i:'😋', us:'/dɪˈlɪʃəs/', uk:'/dɪˈlɪʃəs/', m:'形 美味的', t:'e',
+         en:"Wow! This beef noodle soup smells and tastes absolutely delicious!", cn:"哇！這牛肉麵聞起來和嚐起來都絕對美味！"},
+        {c:'dining', w:'Menu', i:'📜', us:'/ˈmenjuː/', uk:'/ˈmenjuː/', m:'名 菜單', t:'q',
+         en:"Excuse me, may I have the menu? I want to see the specials.", cn:"不好意思，可以給我菜單嗎？我想看看特餐。"},
+        {c:'dining', w:'Recipe', i:'🥘', us:'/ˈresəpi/', uk:'/ˈresəpi/', m:'名 食譜', t:'s',
+         en:"Follow this recipe carefully, and you can make the best cake.", cn:"仔細遵循這份食譜，你就能做出最棒的蛋糕。"},
+        {c:'dining', w:'Pork', i:'🐷', us:'/pɔːrk/', uk:'/pɔːk/', m:'名 豬肉', t:'s',
+         en:"We ordered pork and rice, but the waiter brought us beef.", cn:"我們點了豬肉飯，但服務生卻送來了牛肉。"},
+        {c:'dining', w:'Chopsticks', i:'🥢', us:'/ˈtʃɑːpstɪks/', uk:'/ˈtʃɒpstɪks/', m:'名 筷子', t:'q',
+         en:"Are you able to use chopsticks, or do you need a fork?", cn:"你會用筷子嗎，還是你需要一隻叉子？"},
+        {c:'dining', w:'Papaya', i:'🍈', us:'/pəˈpaɪə/', uk:'/pəˈpaɪə/', m:'名 木瓜', t:'s',
+         en:"My grandfather grows sweet papaya and guava on his farm.", cn:"我的祖父在他的農場種植甜木瓜和芭樂。"},
+        {c:'dining', w:'Bun', i:'🥯', us:'/bʌn/', uk:'/bʌn/', m:'名 小圓麵包', t:'s',
+         en:"The hamburger bun was too dry, so I didn't finish it.", cn:"漢堡麵包太乾了，所以我沒有吃完。"},
+
+        // --- 3. Style (購物/衣物) ---
+        {c:'style', w:'Fitting Room', i:'🚪', us:'/ˈfɪtɪŋ ruːm/', uk:'/ˈfɪtɪŋ ruːm/', m:'名 試衣間', t:'q',
+         en:"Excuse me, where is the fitting room? I need to try these on.", cn:"請問試衣間在哪裡？我需要試穿這些。"},
+        {c:'style', w:'On Sale', i:'🏷️', us:'/ɑːn seɪl/', uk:'/ɒn seɪl/', m:'片 特價中', t:'e',
+         en:"Look! Those expensive shoes are finally on sale today!", cn:"看！那雙昂貴的鞋子今天終於特價了！"},
+        {c:'style', w:'Wallet', i:'👛', us:'/ˈwɑːlɪt/', uk:'/ˈwɒlɪt/', m:'名 錢包', t:'e',
+         en:"Oh no! I left my wallet at home and cannot pay for this!", cn:"噢不！我把錢包忘在家裡，沒辦法付錢了！"},
+        {c:'style', w:'Total', i:'🧮', us:'/ˈtoʊtl/', uk:'/ˈtəʊtl/', m:'名 總額', t:'s',
+         en:"The total comes to one thousand dollars; cash or card?", cn:"總金額是一千元；付現還是刷卡？"},
+        {c:'style', w:'Shorts', i:'🩳', us:'/ʃɔːrts/', uk:'/ʃɔːts/', m:'名 短褲', t:'s',
+         en:"It is too cold to wear shorts; you should put on jeans.", cn:"穿短褲太冷了；你應該穿上牛仔褲。"},
+        {c:'style', w:'Sweater', i:'🧶', us:'/ˈswetər/', uk:'/ˈswetə/', m:'名 毛衣', t:'s',
+         en:"This wool sweater is very warm but a little bit itchy.", cn:"這件羊毛衣很暖和，但有一點刺癢。"},
+        {c:'style', w:'Belt', i:'👖', us:'/belt/', uk:'/belt/', m:'名 皮帶', t:'s',
+         en:"These pants are too loose, so I need to wear a belt.", cn:"這條褲子太鬆了，所以我需要繫皮帶。"},
+
+        // --- 4. Health (身體/健康) ---
+        {c:'body', w:'Fever', i:'🤒', us:'/ˈfiːvər/', uk:'/ˈfiːvə/', m:'名 發燒', t:'s',
+         en:"He has a high fever and needs to go to the hospital right now.", cn:"他發高燒，現在必須馬上去醫院。"},
+        {c:'body', w:'Cough', i:'😷', us:'/kɔːf/', uk:'/kɒf/', m:'名 咳嗽', t:'s',
+         en:"She has a bad cough and a sore throat from the cold.", cn:"因為感冒，她咳嗽咳得很厲害且喉嚨痛。"},
+        {c:'body', w:'Medicine', i:'💊', us:'/ˈmedsn/', uk:'/ˈmedsn/', m:'名 藥', t:'e',
+         en:"Make sure you take this medicine three times a day after meals!", cn:"務必確保這藥要在飯後一天吃三次！"},
+        {c:'body', w:'Heart', i:'❤️', us:'/hɑːrt/', uk:'/hɑːt/', m:'名 心臟;內心', t:'s',
+         en:"My heart beats faster whenever I see that scary spider.", cn:"每當我看到那隻可怕的蜘蛛，我的心跳就會加速。"},
+        {c:'body', w:'Knee', i:'🦵', us:'/niː/', uk:'/niː/', m:'名 膝蓋', t:'e',
+         en:"Ouch! I fell down the stairs and hurt my knee badly!", cn:"哎喲！我從樓梯上摔下來，膝蓋傷得很重！"},
+        
+        // --- 5. Nature (自然/天氣) ---
+        {c:'nature', w:'Typhoon', i:'🌀', us:'/taɪˈfuːn/', uk:'/taɪˈfuːn/', m:'名 颱風', t:'s',
+         en:"A strong typhoon is coming, so schools will be closed tomorrow.", cn:"強烈颱風要來了，所以明天學校會停課。"},
+        {c:'nature', w:'Earthquake', i:'🏚️', us:'/ˈɜːrθkweɪk/', uk:'/ˈɜːθkweɪk/', m:'名 地震', t:'e',
+         en:"Did you feel that earthquake? The whole building was shaking!", cn:"你有感覺到地震嗎？整棟大樓都在搖晃！"},
+        {c:'nature', w:'Rubble', i:'🧱', us:'/ˈrʌbl/', uk:'/ˈrʌbl/', m:'名 瓦礫', t:'s',
+         en:"The rescue team found a survivor under the heavy rubble.", cn:"救援隊在厚重的瓦礫堆下發現了一名倖存者。"},
+        {c:'nature', w:'Rainbow', i:'🌈', us:'/ˈreɪnboʊ/', uk:'/ˈreɪnbəʊ/', m:'名 彩虹', t:'e',
+         en:"Look up at the sky! There is a beautiful rainbow after the rain!", cn:"抬頭看天空！雨後有一道美麗的彩虹！"},
+        {c:'nature', w:'Climate', i:'🌍', us:'/ˈklaɪmət/', uk:'/ˈklaɪmət/', m:'名 氣候', t:'s',
+         en:"The climate is changing, and summers are getting hotter every year.", cn:"氣候正在變遷，夏天一年比一年熱。"},
+
+        // --- 6. Jobs (職業) ---
+        {c:'jobs', w:'Waiter', i:'🤵', us:'/ˈweɪtər/', uk:'/ˈweɪtə/', m:'名 服務生', t:'q',
+         en:"Can you call the waiter? We are ready to order our food.", cn:"你可以叫服務生嗎？我們準備好點餐了。"},
+        {c:'jobs', w:'Secretary', i:'👩‍💼', us:'/ˈsekrəteri/', uk:'/ˈsekrətri/', m:'名 秘書', t:'s',
+         en:"The secretary organizes the schedule for the boss every morning.", cn:"秘書每天早上為老闆整理行程表。"},
+        {c:'jobs', w:'Engineer', i:'👷', us:'/ˌendʒɪˈnɪr/', uk:'/ˌendʒɪˈnɪə/', m:'名 工程師', t:'s',
+         en:"My father is an engineer who builds safe bridges and roads.", cn:"我父親是一位建造安全橋樑和道路的工程師。"},
+        {c:'jobs', w:'Soldier', i:'💂', us:'/ˈsoʊldʒər/', uk:'/ˈsəʊldʒə/', m:'名 士兵', t:'s',
+         en:"The brave soldier protects the country from dangerous enemies.", cn:"勇敢的士兵保護國家免受危險敵人的侵害。"},
+
+        // --- 7. City (城市/地點) ---
+        {c:'city', w:'Castle', i:'🏰', us:'/ˈkæsl/', uk:'/ˈkɑːsl/', m:'名 城堡', t:'s',
+         en:"Long ago, a king and queen lived in this stone castle.", cn:"很久以前，國王和皇后住在這座石造城堡裡。"},
+        {c:'city', w:'Market', i:'🏪', us:'/ˈmɑːrkɪt/', uk:'/ˈmɑːkɪt/', m:'名 市場', t:'e',
+         en:"Let's go to the night market to try some stinky tofu!", cn:"我們去夜市嚐嚐臭豆腐吧！"},
+        {c:'city', w:'Department Store', i:'🏢', us:'/dɪˈpɑːrtmənt stɔːr/', uk:'/dɪˈpɑːtmənt stɔː/', m:'名 百貨公司', t:'s',
+         en:"This department store is huge and has many expensive shops.", cn:"這間百貨公司很大，有很多昂貴的商店。"},
+        
+        // --- 8. Home (居家) ---
+        {c:'home', w:'Lamp', i:'🛋️', us:'/læmp/', uk:'/læmp/', m:'名 燈', t:'q',
+         en:"It is too dark in here; can you please turn on the lamp?", cn:"這裡太暗了；可以請你把燈打開嗎？"},
+        {c:'home', w:'Towel', i:'🧖', us:'/ˈtaʊəl/', uk:'/ˈtaʊəl/', m:'名 毛巾', t:'s',
+         en:"Don't forget to bring a dry towel when you go swimming.", cn:"去游泳時別忘了帶一條乾毛巾。"},
+        {c:'home', w:'Drawer', i:'🗄️', us:'/drɔːr/', uk:'/drɔː/', m:'名 抽屜', t:'q',
+         en:"Did you look inside the top drawer of your desk for the pen?", cn:"你有看過書桌最上面的抽屜找那枝筆嗎？"},
+
+        // --- 9. Animals (動物) ---
+        {c:'animals', w:'Turtle', i:'🐢', us:'/ˈtɜːrtl/', uk:'/ˈtɜːtl/', m:'名 烏龜', t:'s',
+         en:"The sea turtle swims slowly but gracefully in the deep ocean.", cn:"海龜在深海中緩慢而優雅地游泳。"},
+        {c:'animals', w:'Shark', i:'🦈', us:'/ʃɑːrk/', uk:'/ʃɑːk/', m:'名 鯊魚', t:'e',
+         en:"Everyone got out of the water when they saw a shark fin!", cn:"當大家看到鯊魚鰭時，所有人都衝出了水面！"},
+        {c:'animals', w:'Spider', i:'🕷️', us:'/ˈspaɪdər/', uk:'/ˈspaɪdə/', m:'名 蜘蛛', t:'e',
+         en:"Ah! There is a giant spider hanging from the ceiling!", cn:"啊！有一隻巨大的蜘蛛掛在天花板上！"},
+
+        // --- 10. Abstract (抽象/動作) ---
+        {c:'abstract', w:'Future', i:'🔮', us:'/ˈfjuːtʃər/', uk:'/ˈfjuːtʃə/', m:'名 未來', t:'q',
+         en:"What do you want to be in the future when you grow up?", cn:"你長大後，未來想要成為什麼？"},
+        {c:'abstract', w:'Experience', i:'🧠', us:'/ɪkˈspɪriəns/', uk:'/ɪkˈspɪəriəns/', m:'名 經驗', t:'s',
+         en:"Traveling to different countries is a wonderful experience for students.", cn:"去不同國家旅行對學生來說是很棒的經驗。"},
+        {c:'abstract', w:'Dangerous', i:'⚠️', us:'/ˈdeɪndʒərəs/', uk:'/ˈdeɪndʒərəs/', m:'形 危險的', t:'e',
+         en:"Stop! It is too dangerous to swim in the river during a storm!", cn:"停下！暴風雨期間在河裡游泳太危險了！"}
+    ];
 
     let currentItem = null;
     let recognition = null;
     let isRecording = false;
 
     // --- 初始化 ---
-    function init() {
-        for(let k in db) renderGrid(k);
+    window.onload = function() {
+        filter('multi'); // 預設顯示多義字
         initSpeech();
-    }
+    };
 
-    function renderGrid(key) {
-        const container = document.getElementById(`grid-${key}`);
-        const themeColor = document.querySelector(`button[onclick*='${key}']`).style.getPropertyValue('--theme-color');
+    // --- 分類篩選 ---
+    function filter(cat) {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
         
-        db[key].forEach(item => {
+        document.querySelectorAll('.nav-pill').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('onclick').includes(cat));
+        });
+
+        const activeBtn = document.querySelector('.nav-pill.active');
+        const theme = activeBtn ? activeBtn.style.getPropertyValue('--theme') : '#fff';
+
+        const items = db.filter(i => i.c === cat);
+        items.forEach(item => {
             const card = document.createElement('div');
-            card.className = 'vocab-card';
-            card.style.setProperty('--theme-color', themeColor);
+            card.className = 'word-card';
+            card.style.setProperty('--theme', theme);
             card.innerHTML = `
-                <div class="en-word">${item.w}</div>
-                <div class="ch-word">${item.m}</div>
+                <div class="wc-icon">${item.i}</div>
+                <div>
+                    <div class="wc-word">${item.w}</div>
+                    <div class="wc-mean">${item.m.split('；')}...</div>
+                </div>
             `;
-            card.onclick = () => selectWord(item, card, themeColor);
-            container.appendChild(card);
+            card.onclick = () => selectItem(item, card, theme);
+            grid.appendChild(card);
         });
     }
 
-    function switchTab(mode, btn) {
-        document.querySelectorAll('.module-section').forEach(m => m.classList.remove('active'));
-        document.getElementById(`mod-${mode}`).classList.add('active');
-        
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        document.getElementById('hud').classList.remove('active');
-        document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
-        if(isRecording) toggleMic();
-    }
-
-    function selectWord(item, card, color) {
+    // --- 選取與顯示 ---
+    function selectItem(item, el, theme) {
         currentItem = item;
-        document.querySelectorAll('.vocab-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
+        
+        document.querySelectorAll('.word-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
 
-        document.getElementById('disp-word').textContent = item.w;
-        document.getElementById('disp-mean').textContent = item.m;
-        document.getElementById('disp-en').textContent = item.en;
-        document.getElementById('disp-cn').textContent = item.cn;
+        // 更新內容
+        document.getElementById('d-icon').textContent = item.i;
+        document.getElementById('d-word').textContent = item.w;
+        document.getElementById('d-word').style.color = theme;
+        document.getElementById('d-mean').textContent = item.m.replace('；', ' | ');
+        
+        document.getElementById('d-us').textContent = item.us;
+        document.getElementById('d-uk').textContent = item.uk;
+        
+        document.getElementById('d-en').textContent = item.en;
+        document.getElementById('d-cn').textContent = item.cn;
 
-        const hud = document.getElementById('hud');
-        hud.style.borderTopColor = color;
-        hud.classList.add('active');
+        // 語調標籤
+        const toneBadge = document.getElementById('d-tone');
+        const ctxBox = document.getElementById('ctx-box');
+        
+        ctxBox.className = 'h-context'; // reset
+        if(item.t === 'q') {
+            toneBadge.textContent = 'Question ↗';
+            toneBadge.style.background = 'var(--neon-yellow)';
+            ctxBox.style.borderLeftColor = 'var(--neon-yellow)';
+        } else if(item.t === 'e') {
+            toneBadge.textContent = 'Emotion ↘!';
+            toneBadge.style.background = 'var(--neon-pink)';
+            ctxBox.style.borderLeftColor = 'var(--neon-pink)';
+        } else {
+            toneBadge.textContent = 'Statement ↘';
+            toneBadge.style.background = 'var(--neon-blue)';
+            ctxBox.style.borderLeftColor = 'var(--neon-blue)';
+        }
 
-        updateStatus("CLICK MIC & SPEAK", "#666");
+        // 顯示 HUD
+        document.getElementById('hud').classList.add('active');
+        document.getElementById('hud').style.borderTopColor = theme;
+        updateStatus("READY", "#666");
+
         speakCurrent();
     }
 
+    // --- TTS 發音 ---
     function speakCurrent() {
         if(!currentItem) return;
         window.speechSynthesis.cancel();
         
-        const u1 = new SpeechSynthesisUtterance(currentItem.w);
-        u1.lang = 'en-US';
-        u1.rate = 0.8;
+        // Word
+        const u = new SpeechSynthesisUtterance(currentItem.w);
+        u.lang = 'en-US'; 
+        u.rate = 0.9;
         
-        const u2 = new SpeechSynthesisUtterance(currentItem.en);
-        u2.lang = 'en-US';
-        u2.rate = 0.9;
+        // Sentence
+        const s = new SpeechSynthesisUtterance(currentItem.en);
+        s.lang = 'en-US';
+        s.rate = 0.9; 
 
-        window.speechSynthesis.speak(u1);
-        window.speechSynthesis.speak(u2);
+        window.speechSynthesis.speak(u);
+        window.speechSynthesis.speak(s);
     }
 
-    // --- 語音辨識核心修復 (Speech Core Fix) ---
+    // --- 電腦主動反饋 ---
+    function computerResponse(isCorrect) {
+        const text = isCorrect ? "Excellent!" : "Try again.";
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 1.2; 
+        u.pitch = isCorrect ? 1.2 : 1.0;
+        window.speechSynthesis.speak(u);
+    }
+
+    // --- 語音辨識 ---
     function initSpeech() {
-        // 1. 檢查瀏覽器支援
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            console.warn("Speech API missing.");
+            updateStatus("NO MIC", "red");
             return;
         }
 
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognition();
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SR();
         recognition.lang = 'en-US';
         recognition.continuous = false;
         recognition.interimResults = false;
 
         recognition.onstart = () => {
             isRecording = true;
-            document.getElementById('btn-mic').classList.add('recording');
+            document.getElementById('mic-btn').classList.add('active');
             updateStatus("LISTENING...", "#fff");
         };
 
         recognition.onend = () => {
             isRecording = false;
-            document.getElementById('btn-mic').classList.remove('recording');
+            document.getElementById('mic-btn').classList.remove('active');
         };
 
-        recognition.onresult = (event) => {
-            const transcript = event.results.transcript.toLowerCase();
-            verifySpeech(transcript);
+        recognition.onresult = (e) => {
+            const spoken = e.results.transcript.toLowerCase();
+            validate(spoken);
         };
 
-        recognition.onerror = (event) => {
+        recognition.onerror = () => {
             isRecording = false;
-            document.getElementById('btn-mic').classList.remove('recording');
-            let msg = "ERROR";
-            if(event.error === 'not-allowed') msg = "MIC BLOCKED (Check Browser Settings)";
-            if(event.error === 'no-speech') msg = "NO SOUND";
-            updateStatus(msg, "var(--neon-pink)");
+            document.getElementById('mic-btn').classList.remove('active');
+            updateStatus("ERROR", "#ff0055");
+            computerResponse(false);
         };
     }
 
     function toggleMic() {
-        if (!recognition) {
-            alert("⚠️ 您的瀏覽器不支援錄音。\n請使用 Chrome 或 Edge (電腦版)。");
-            return;
-        }
-        if (isRecording) recognition.stop();
+        if(!recognition) return alert("Please use Chrome/Edge on Desktop.");
+        if(isRecording) recognition.stop();
         else recognition.start();
     }
 
-    function verifySpeech(spoken) {
+    function validate(spoken) {
         if(!currentItem) return;
         const target = currentItem.w.toLowerCase();
         
-        // 寬鬆模糊比對
         if (spoken.includes(target) || target.includes(spoken)) {
-            updateStatus(`CORRECT! You said: "${spoken}"`, "var(--neon-green)");
+            updateStatus("CORRECT!", "var(--neon-green)");
+            computerResponse(true);
         } else {
-            updateStatus(`TRY AGAIN. You said: "${spoken}"`, "var(--neon-pink)");
+            updateStatus(`HEARD: ${spoken}`, "var(--neon-pink)");
+            computerResponse(false);
         }
     }
 
     function updateStatus(text, color) {
-        const el = document.getElementById('status-msg');
+        const el = document.getElementById('status');
         el.textContent = text;
         el.style.color = color;
     }
 
-    window.onload = init;
 </script>
-
 </body>
-
 </html>
-
-
